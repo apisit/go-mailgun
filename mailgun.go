@@ -1,3 +1,4 @@
+//	Package mailgun provides functions to
 package mailgun
 
 import (
@@ -10,6 +11,7 @@ import (
 	"strings"
 )
 
+//	Message struct contains basic email data
 type Message struct {
 	From    string
 	To      string
@@ -27,14 +29,17 @@ type Client struct {
 	Domain string
 }
 
+//	Initialize mail gun client by giving domain name and api key.
 func Init(domain, apiKey string) *Client {
 	return &Client{apiKey, domain}
 }
 
+//	Mailgun's resource name for message
 func (m Message) ResourceName() string {
 	return "messages"
 }
 
+// Construct message struct to POST body
 func (m Message) Body() io.Reader {
 	values := make(url.Values)
 	values.Set("from", m.From)
@@ -45,21 +50,27 @@ func (m Message) Body() io.Reader {
 	return strings.NewReader(values.Encode())
 }
 
+//	Message requires sender, recipeient, subject and either regular body or html body
 func (m Message) Isvalid() bool {
 	if m.From == "" || m.To == "" || m.Subject == "" || (m.Text == "" && m.Html == "") {
 		return false
 	}
 	return true
 }
+
+//	Final mailgun endpoint for message
 func (m Message) EndPoint(c Client) string {
 	return fmt.Sprintf("%s/%s", c.EndPoint(), m.ResourceName())
 }
 
+//	Mailgun endpoint with domain name
 func (client Client) EndPoint() string {
 	return fmt.Sprintf("%s/%s", baseUri, client.Domain)
 }
 
-func (client Client) Send(message Message) (response string, err error) {
+//	Send message
+//	Response with mailgun's standard response
+func (client *Client) Send(message Message) (response string, err error) {
 	if !message.Isvalid() {
 		var errorInvalidMessage = errors.New("Invalid message")
 		return "", errorInvalidMessage
