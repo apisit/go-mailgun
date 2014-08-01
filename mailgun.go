@@ -1,4 +1,4 @@
-//	Package mailgun provides functions to
+//	Package mailgun provides functions to send an email via mailgun api.
 package mailgun
 
 import (
