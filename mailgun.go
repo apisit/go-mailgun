@@ -70,7 +70,7 @@ func (client Client) EndPoint() string {
 
 //	Send message
 //	Response with mailgun's standard response
-func (client *Client) Send(message Message) (response string, err error) {
+func (client Client) Send(message Message) (response string, err error) {
 	if !message.Isvalid() {
 		var errorInvalidMessage = errors.New("Invalid message")
 		return "", errorInvalidMessage
